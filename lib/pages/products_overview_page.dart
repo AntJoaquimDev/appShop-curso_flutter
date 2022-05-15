@@ -53,10 +53,19 @@ class _ProductOverviewPageState extends State<ProductOverviewPage> {
             },
           ),
           Consumer<Cart>(
-            child: IconButton(
-              onPressed: () =>
-                  {Navigator.of(context).pushNamed(AppRoutes.CART_PAGE)},
-              icon: Icon(Icons.shopping_cart),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () =>
+                      {Navigator.of(context).pushNamed(AppRoutes.ORDERS)},
+                  icon: Icon(Icons.payment),
+                ),
+                IconButton(
+                  onPressed: () =>
+                      {Navigator.of(context).pushNamed(AppRoutes.CART_PAGE)},
+                  icon: Icon(Icons.shopping_cart),
+                ),
+              ],
             ),
             builder: (ctx, cart, child) => Badge(
               value: cart.itemCount.toString(),
