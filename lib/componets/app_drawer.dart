@@ -15,17 +15,33 @@ class AppDrawer extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.shop),
+            leading: Icon(
+              Icons.shop,
+              color: Theme.of(context).primaryColor,
+            ),
             title: Text('Loja'),
             onTap: () =>
                 Navigator.of(context).pushReplacementNamed(AppRoutes.HOME),
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.payment),
+            leading: Icon(
+              Icons.payment,
+              color: Theme.of(context).primaryColor,
+            ),
             title: Text('Pedidos'),
             onTap: () =>
                 Navigator.of(context).pushReplacementNamed(AppRoutes.ORDERS),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(
+              Icons.edit,
+              color: Theme.of(context).primaryColor,
+            ),
+            title: Text('Gerenciar Produto'),
+            onTap: () => Navigator.of(context)
+                .pushReplacementNamed(AppRoutes.PRODUCTSPAGE),
           ),
         ],
       ),

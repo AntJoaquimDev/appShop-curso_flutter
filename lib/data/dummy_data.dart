@@ -33,4 +33,12 @@ final dummyProducts = [
     imageUrl:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
   ),
+  Product(
+    id: 'p5',
+    name: 'Bola',
+    description: 'Bola de Futebol profissional FIFA.',
+    price: 159.00,
+    imageUrl:
+        'https://st.depositphotos.com/1000459/2436/i/450/depositphotos_24366251-stock-photo-soccer-ball.jpg',
+  ),
 ];

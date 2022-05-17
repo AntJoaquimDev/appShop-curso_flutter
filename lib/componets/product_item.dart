@@ -1,60 +1,69 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/models/cart.dart';
 import 'package:shop/models/product.dart';
-
+import 'package:shop/models/product_list.dart';
 import 'package:shop/utils/app_routes.dart';
 
 class ProductItem extends StatelessWidget {
+  final Product product;
+  const ProductItem({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context, listen: false);
-    final cart = Provider.of<Cart>(context, listen: false);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: GridTile(
-        child: GestureDetector(
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
-          ),
-          onTap: () {
-            Navigator.of(context).pushNamed(
-              AppRoutes.PRODUCT_DETAIL,
-              arguments: product,
-            );
-          },
-        ),
-        footer: Container(
-          height: 31,
-          child: GridTileBar(
-            backgroundColor: Colors.black87,
-            leading: Consumer<Product>(
-              // gerar mudança cirugica apenas em lugar especifico. aula 230
-              builder: (ctx, product, _) => IconButton(
-                icon: Icon(
-                  product.isFavorite ? Icons.favorite : Icons.favorite_border,
-                ),
-                color: Theme.of(context).accentColor,
-                onPressed: () => {
-                  product.toggleFavorite(),
-                },
-              ),
-            ),
-            title: Text(
-              product.name,
-              textAlign: TextAlign.center,
-            ),
-            trailing: IconButton(
-              onPressed: () => {
-                cart.addItem(product),
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(product.imageUrl),
+      ),
+      title: Text(product.name),
+      trailing: Container(
+        width: 100,
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  AppRoutes.PRODUCT_FORM_PAGE,
+                  arguments: product,
+                );
               },
-              icon: Icon(Icons.shopping_cart),
-              color: Theme.of(context).accentColor,
+              icon: Icon(Icons.edit),
+              color: Theme.of(context).primaryColor,
             ),
-          ),
+            IconButton(
+              onPressed: () {
+                showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text('Tem Certeza?'),
+                    content: Text('Quer realmente excluir o produto ?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        child: Text('Não'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Provider.of<ProductList>(
+                            context,
+                            listen: false,
+                          ).removeProduct(product);
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Sim'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              icon: Icon(Icons.delete),
+              color: Theme.of(context).errorColor,
+            ),
+          ],
         ),
       ),
     );

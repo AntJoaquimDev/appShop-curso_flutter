@@ -56,13 +56,15 @@ class _ProductOverviewPageState extends State<ProductOverviewPage> {
             child: Row(
               children: [
                 IconButton(
-                  onPressed: () =>
-                      {Navigator.of(context).pushNamed(AppRoutes.ORDERS)},
+                  onPressed: () => {
+                    Navigator.of(context).pushNamed(AppRoutes.ORDERS),
+                  },
                   icon: Icon(Icons.payment),
                 ),
                 IconButton(
-                  onPressed: () =>
-                      {Navigator.of(context).pushNamed(AppRoutes.CART_PAGE)},
+                  onPressed: () => {
+                    Navigator.of(context).pushNamed(AppRoutes.CART_PAGE),
+                  },
                   icon: Icon(Icons.shopping_cart),
                 ),
               ],
