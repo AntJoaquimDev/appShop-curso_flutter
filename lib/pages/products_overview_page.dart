@@ -6,6 +6,7 @@ import 'package:shop/componets/app_drawer.dart';
 import 'package:shop/componets/badge.dart';
 import 'package:shop/componets/product_grid.dart';
 import 'package:shop/models/cart.dart';
+import 'package:shop/models/product_list.dart';
 import 'package:shop/utils/app_routes.dart';
 
 enum FilterOptions {
@@ -22,6 +23,18 @@ class ProductOverviewPage extends StatefulWidget {
 
 class _ProductOverviewPageState extends State<ProductOverviewPage> {
   bool _showFavoriteOnly = false;
+  bool _isLoading = true;
+
+  void initState() {
+    super.initState();
+    Provider.of<ProductList>(context, listen: false)
+        .loadProducts()
+        .then((value) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +89,9 @@ class _ProductOverviewPageState extends State<ProductOverviewPage> {
           ),
         ],
       ),
-      body: ProductGrid(_showFavoriteOnly),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ProductGrid(_showFavoriteOnly),
       //acessando atravez do provider aula 226
       drawer: AppDrawer(),
     );
