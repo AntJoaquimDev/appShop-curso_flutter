@@ -5,7 +5,7 @@ import 'package:shop/models/cart_items.dart';
 import '../models/cart.dart';
 
 class CartaItemsWidget extends StatelessWidget {
-  final CartItems cartItem;
+  final CartItem cartItem;
   const CartaItemsWidget({
     Key? key,
     required this.cartItem,

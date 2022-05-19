@@ -8,9 +8,9 @@ import 'package:shop/models/product.dart';
 import 'cart_items.dart';
 
 class Cart with ChangeNotifier {
-  Map<String, CartItems> _items = {};
+  Map<String, CartItem> _items = {};
 
-  Map<String, CartItems> get items {
+  Map<String, CartItem> get items {
     return {..._items}; //gera um clone da lista
   }
 
@@ -30,7 +30,7 @@ class Cart with ChangeNotifier {
     if (_items.containsKey(product.id)) {
       _items.update(
         product.id,
-        (existingItem) => CartItems(
+        (existingItem) => CartItem(
           id: existingItem.id,
           productId: existingItem.productId,
           name: existingItem.name,
@@ -41,7 +41,7 @@ class Cart with ChangeNotifier {
     } else {
       _items.putIfAbsent(
         product.id,
-        () => CartItems(
+        () => CartItem(
           id: Random().nextDouble().toString(),
           productId: product.id,
           name: product.name,
@@ -67,7 +67,7 @@ class Cart with ChangeNotifier {
     } else {
       _items.update(
         productId,
-        (existingItem) => CartItems(
+        (existingItem) => CartItem(
           id: existingItem.id,
           productId: existingItem.productId,
           name: existingItem.name,
