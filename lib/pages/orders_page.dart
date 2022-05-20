@@ -26,7 +26,7 @@ class OrdersPage extends StatelessWidget {
           } else {
             return Consumer<OrderList>(
               builder: (BuildContext ctx, orders, child) => ListView.builder(
-                itemCount: orders?.itmsCount,
+                itemCount: orders.itemsCount,
                 itemBuilder: (ctx, i) => OrderWidget(
                   order: orders.items[i],
                 ),

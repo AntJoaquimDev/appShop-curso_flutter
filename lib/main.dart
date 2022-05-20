@@ -1,11 +1,13 @@
-// ignore_for_file: deprecated_member_use, unnecessary_new
+// ignore_for_file: deprecated_member_use, unnecessary_new, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/models/auth.dart';
 import 'package:shop/models/cart.dart';
 import 'package:shop/models/order_list.dart';
 
 import 'package:shop/models/product_list.dart';
+import 'package:shop/pages/auth_page.dart';
 import 'package:shop/pages/orders_page.dart';
 import 'package:shop/pages/product_form_page.dart';
 import 'package:shop/pages/products_page.dart';
@@ -28,6 +30,9 @@ class MyApp extends StatelessWidget {
       //criar varios provaider na aplica
       providers: [
         ChangeNotifierProvider(
+          create: (_) => Auth(),
+        ),
+        ChangeNotifierProvider(
           create: (_) => ProductList(),
         ),
         ChangeNotifierProvider(
@@ -48,6 +53,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         routes: {
           // AppRoutes.PRODUCT_DETAIL: ((context) => ProductDetailPage()),
+          AppRoutes.AUTH_PAGE: ((context) => AuthPage()),
           AppRoutes.HOME: ((context) => ProductOverviewPage()),
           AppRoutes.PRODUCT_DETAIL: ((context) => ProductDetailPage()),
           AppRoutes.CART_PAGE: ((context) => CartPage()),

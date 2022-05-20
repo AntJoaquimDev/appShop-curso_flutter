@@ -8,6 +8,7 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
     final Product product =
         ModalRoute.of(context)!.settings.arguments as Product;
     return Scaffold(
@@ -18,8 +19,9 @@ class ProductDetailPage extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              height: 300,
-              width: double.infinity,
+              //300 width:double.infinity
+              height: deviceSize.width * 75,
+              width: deviceSize.width * 75,
               child: Image.network(
                 product.imageUrl,
                 fit: BoxFit.cover,

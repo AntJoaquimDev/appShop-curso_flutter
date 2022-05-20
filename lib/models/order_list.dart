@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop/models/cart.dart';
 import 'package:shop/models/cart_items.dart';
@@ -16,7 +16,7 @@ class OrderList with ChangeNotifier {
     return [..._items];
   }
 
-  int get itmsCount {
+  int get itemsCount {
     return items.length;
   }
 
