@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/exceptions/auth_exception.dart';
 
 import '../models/auth.dart';
 
@@ -40,6 +41,21 @@ class _AuthFormState extends State<AuthForm> {
     });
   }
 
+  void _showErroDialog(String msg) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Ocorreu um [ERRO]!'),
+        content: Text(msg),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Tente novamente')),
+        ],
+      ),
+    );
+  }
+
   Future<void> _submit() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) {
@@ -49,13 +65,22 @@ class _AuthFormState extends State<AuthForm> {
     _formKey.currentState?.save();
     Auth auth = Provider.of(context, listen: false);
 
-    if (_isLogin()) {
-      //login
-    } else {
-      await auth.signup(
-        _autData['email']!,
-        _autData['password']!,
-      );
+    try {
+      if (_isLogin()) {
+        await auth.login(
+          _autData['email']!,
+          _autData['password']!,
+        );
+      } else {
+        await auth.signup(
+          _autData['email']!,
+          _autData['password']!,
+        );
+      }
+    } on AuthException catch (error) {
+      _showErroDialog(error.toString());
+    } catch (error) {
+      _showErroDialog('Desculpa ocorreu um erro inesperado no sistema');
     }
 
     setState(() => _isLoading = false);
@@ -70,7 +95,7 @@ class _AuthFormState extends State<AuthForm> {
       elevation: 8,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
-        height: _isLogin() ? 310 : 400,
+        height: _isLogin() ? 300 : 370,
         width: deviceSize.width * 75,
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -112,12 +137,12 @@ class _AuthFormState extends State<AuthForm> {
                     : (_password) {
                         final password = _password ?? '';
                         if (password != _passwordController.text) {
-                          return 'senhas informada não conferem.';
+                          return 'Senhas informadas não conferem.';
                         }
                         return null;
                       },
               ),
-            SizedBox(height: 20),
+            SizedBox(height: 15),
             if (_isLoading)
               CircularProgressIndicator()
             else
@@ -136,7 +161,7 @@ class _AuthFormState extends State<AuthForm> {
             TextButton(
               onPressed: _switchAuthMode,
               child:
-                  Text(_isLogin() ? 'DESEJA REGISTRARR ?' : 'JÁ POSSUI CONTA?'),
+                  Text(_isLogin() ? 'DESEJA REGISTRAR ?' : 'JÁ POSSUI CONTA?'),
             ),
           ]),
         ),
