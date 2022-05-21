@@ -20,8 +20,8 @@ class AppDrawer extends StatelessWidget {
               color: Theme.of(context).primaryColor,
             ),
             title: Text('Loja'),
-            onTap: () =>
-                Navigator.of(context).pushReplacementNamed(AppRoutes.HOME),
+            onTap: () => Navigator.of(context)
+                .pushReplacementNamed(AppRoutes.AUTH_OR_HOME),
           ),
           Divider(),
           ListTile(

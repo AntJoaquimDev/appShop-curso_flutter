@@ -12,8 +12,8 @@ import 'product.dart';
 import '../exceptions/http_exception.dart';
 
 class ProductList with ChangeNotifier {
-  //final _baseUrl = 'https://shop-joaquim-default-rtdb.firebaseio.com/product';
-
+  final String _token;
+  final String _userId;
   List<Product> _items = [];
   bool _showFavoriteOnly = false;
 
@@ -21,6 +21,11 @@ class ProductList with ChangeNotifier {
   List<Product> get favoriteItems =>
       _items.where((prod) => prod.isFavorite).toList();
 
+  ProductList([
+    this._userId = '',
+    this._token = '',
+    this._items = const [],
+  ]);
   //retorna o clone dos items da lista
   int get itemCount {
     return _items.length;
@@ -28,13 +33,21 @@ class ProductList with ChangeNotifier {
 
   Future<void> loadProducts() async {
     _items.clear();
-    final response =
-        await http.get(Uri.parse('${Constants.PRODUCT_BASE_URL}.json'));
-    if (response.body == 'null') {
-      return;
-    }
+    final response = await http
+        .get(Uri.parse('${Constants.PRODUCT_BASE_URL}.json?auth=$_token'));
+    if (response.body == 'null') return;
+
+    final favResponse = await http.get(
+      Uri.parse(
+        '${Constants.USER_FAVORITES_URL}/$_userId.json?auth=$_token',
+      ),
+    );
+    Map<String, dynamic> favData =
+        favResponse.body == 'null' ? {} : jsonDecode(favResponse.body);
+
     Map<String, dynamic> data = jsonDecode(response.body);
     data.forEach((ProductId, ProductData) {
+      final isFavorite = favData[ProductId] ?? false;
       _items.add(
         Product(
           id: ProductId,
@@ -42,6 +55,7 @@ class ProductList with ChangeNotifier {
           description: ProductData['description'] as String,
           price: ProductData['price'] as double,
           imageUrl: ProductData['imageUrl'] as String,
+          isFavorite: isFavorite,
         ),
       );
     });
@@ -67,14 +81,14 @@ class ProductList with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final response = await http.post(
-      Uri.parse('${Constants.PRODUCT_BASE_URL}.json'),
+      Uri.parse('${Constants.PRODUCT_BASE_URL}.json?auth=$_token'),
       body: jsonEncode(
         {
           "name": product.name,
           "description": product.description,
           "price": product.price,
           "imageUrl": product.imageUrl,
-          "isFavorite": product.isFavorite,
+          //"isFavorite": product.isFavorite,
         },
       ),
     );
@@ -86,7 +100,7 @@ class ProductList with ChangeNotifier {
       description: product.description,
       price: product.price,
       imageUrl: product.imageUrl,
-      isFavorite: product.isFavorite,
+      // isFavorite: product.isFavorite,
     ));
     notifyListeners();
   }
@@ -95,7 +109,8 @@ class ProductList with ChangeNotifier {
     int index = _items.indexWhere((p) => p.id == product.id);
     if (index >= 0) {
       await http.patch(
-        Uri.parse('${Constants.PRODUCT_BASE_URL}/${product.id}.json'),
+        Uri.parse(
+            '${Constants.PRODUCT_BASE_URL}/${product.id}.json?auth=$_token'),
         body: jsonEncode(
           {
             "name": product.name,
@@ -120,7 +135,8 @@ class ProductList with ChangeNotifier {
       notifyListeners();
 //remove primeiro da tela e depois do banco se der erro retorna o produto
       final response = await http.delete(
-        Uri.parse('${Constants.PRODUCT_BASE_URL}/${product.id}.json'),
+        Uri.parse(
+            '${Constants.PRODUCT_BASE_URL}/${product.id}.json?auth=$_token'),
       );
       if (response.statusCode >= 400) {
         _items.insert(index, product);

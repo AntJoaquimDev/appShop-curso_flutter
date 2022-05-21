@@ -5,8 +5,30 @@ import 'package:http/http.dart' as http;
 import 'package:shop/exceptions/auth_exception.dart';
 
 class Auth with ChangeNotifier {
-  static const _url =
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
+  /*  static const _url =
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='; */
+  String? _token;
+  String? _email;
+  String? _userId;
+  DateTime? _expiryDate;
+
+  bool get isAuth {
+    final isValid = _expiryDate?.isAfter(DateTime.now()) ?? false;
+    return _token != null && isValid;
+  }
+
+//verifica se esta autenticado para retornar os dados do user
+  String? get token {
+    return isAuth ? _token : null;
+  }
+
+  String? get email {
+    return isAuth ? _email : null;
+  }
+
+  String? get userId {
+    return isAuth ? _userId : null;
+  }
 
   Future<void> _authenticate(
       String email, String password, String urlFragment) async {
@@ -23,8 +45,18 @@ class Auth with ChangeNotifier {
     final body = jsonDecode(response.body);
     if (body['error'] != null) {
       throw AuthException(body['error']['message']);
+    } else {
+      _token = body['idToken'];
+      _email = body['email'];
+      _userId = body['localId'];
+
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(body['expiresIn']),
+        ),
+      );
+      notifyListeners();
     }
-    print(body);
   }
 
   Future<void> signup(String email, String password) async {
