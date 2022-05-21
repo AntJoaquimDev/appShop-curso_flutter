@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class Auth with ChangeNotifier {
   String? _email;
   String? _userId;
   DateTime? _expiryDate;
+  Timer? _logoutTimer;
 
   bool get isAuth {
     final isValid = _expiryDate?.isAfter(DateTime.now()) ?? false;
@@ -55,6 +57,7 @@ class Auth with ChangeNotifier {
           seconds: int.parse(body['expiresIn']),
         ),
       );
+      // _autoLogout();
       notifyListeners();
     }
   }
@@ -66,18 +69,28 @@ class Auth with ChangeNotifier {
   Future<void> login(String email, String password) async {
     return _authenticate(email, password, 'signInWithPassword');
   }
-}
 
-/*
-{
-  "idToken": "[ID_TOKEN]",
-  "email": "[user@example.com]",
-  "refreshToken": "[REFRESH_TOKEN]",
-  "expiresIn": "3600",
-  "localId": "tRcfmLH7..."
-}
+  void logout() {
+    _token = null;
+    _email = null;
+    _userId = null;
+    _expiryDate = null;
+    //DateTime? _expiryDate;
+    _clearAutoLogoutTimer();
+    notifyListeners();
+  }
 
-curl 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]' \
--H 'Content-Type: application/json' \
---data-binary '{"email":"[user@example.com]","password":"[PASSWORD]","returnSecureToken":true}'
-*/
+  void _clearAutoLogoutTimer() {
+    _logoutTimer?.cancel();
+    _logoutTimer = null;
+  }
+
+  void _autoLogout() {
+    _clearAutoLogoutTimer();
+    final timeToLogout = _expiryDate?.difference(DateTime.now()).inSeconds;
+    _logoutTimer = Timer(
+      Duration(seconds: timeToLogout ?? 0),
+      logout,
+    );
+  }
+}
