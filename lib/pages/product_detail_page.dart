@@ -19,9 +19,9 @@ class ProductDetailPage extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              //300 width:double.infinity
-              height: deviceSize.width * 75,
-              width: deviceSize.width * 75,
+              padding: const EdgeInsets.all(15),
+              height: deviceSize.width * 0.45,
+              width: deviceSize.width * 0.75,
               child: Image.network(
                 product.imageUrl,
                 fit: BoxFit.cover,
