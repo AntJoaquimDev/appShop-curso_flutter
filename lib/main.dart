@@ -15,6 +15,7 @@ import 'package:shop/pages/products_page.dart';
 import 'package:shop/utils/app_routes.dart';
 import 'pages/cart_page.dart';
 import 'pages/product_detail_page.dart';
+import 'utils/custom_route.dart';
 
 void main() {
   runApp(const MyApp());
@@ -62,12 +63,18 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.purple,
           accentColor: Colors.deepOrange,
           fontFamily: 'Lato',
+          pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.android: CustomPageTransitionsBuilder(),
+            TargetPlatform.iOS: CustomPageTransitionsBuilder(),
+            TargetPlatform.windows: CustomPageTransitionsBuilder(),
+          }),
         ),
         //home: ,
         debugShowCheckedModeBanner: false,
         routes: {
           AppRoutes.AUTH_OR_HOME: ((context) => AuthOrHomePage()),
           AppRoutes.PRODUCT_DETAIL: ((context) => ProductDetailPage()),
+          // AppRoutes.PRODUCT_DETAIL: ((context) => ProductDetailPage()),
           AppRoutes.CART_PAGE: ((context) => CartPage()),
           AppRoutes.ORDERS: ((context) => OrdersPage()),
           AppRoutes.PRODUCTSPAGE: ((context) => ProductsPage()),
